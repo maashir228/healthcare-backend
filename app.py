@@ -6,6 +6,7 @@ import os
 
 # Load environment variables from .env file
 load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
 
@@ -18,17 +19,19 @@ def translate():
     data = request.json
     text = data.get('text')
     target_language = data.get('target_language')
-    
+    #print(text)
+
     if not text or not target_language:
         return jsonify({'error': 'Invalid input'}), 400
 
     prompt = f"Translate the following text to {target_language}: {text}"
-    
+
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
-        translated_text = response.text
-        return jsonify({'translated_text': translated_text})
+        result = genai.GenerativeModel(model_name="gemini-1.5-flash"
+            )
+        translated_text = result.generate_content(prompt)
+        #print(translated_text.text)
+        return jsonify({'translated_text': translated_text.text})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
